@@ -158,6 +158,18 @@ export class SkeletonAnalyzer {
     });
   }
 
+  public static ShowMetadata(data: SkeletonMetadata) {
+    console.info(colors.cyan(`Show skeleton metadata of ${data.fileName}`));
+    console.log(`Show bones hash array: `);
+    data.bones.forEach((hash) =>
+      process.stdout.write(`${hash.value === 0 ? "(" : ")"}`)
+    );
+    console.log("");
+    console.log(`Length:   ${data.bones.length}`);
+    console.log(`ID:       ${data.groupId}`);
+    console.log(`Name:     ${data.name}`);
+  }
+
   private static _MakeBoneHash(skeleton: Skeleton): BoneHash[] {
     console.info(colors.white(`Create Bone hierarchy array...`));
     const constructHash = (bone: Bone): BoneHash[] => {
@@ -330,7 +342,10 @@ export class SkeletonAnalyzer {
     return isValied;
   }
 
-  private static _SaveMetadata(metadata: SkeletonMetadata) {
-    fs.writeFileSync(metadata.fileName, JSON.stringify(metadata, null, 2));
+  public static SaveMetadata(metadata: SkeletonMetadata) {
+    fs.writeFileSync(
+      `${metadata.fileName}.meta`,
+      JSON.stringify(metadata, null, 2)
+    );
   }
 }
