@@ -56,9 +56,9 @@ export class SkeletonAnalyzer {
   public static async AnalyzeFromFileAsync(
     root: string,
     fileName: string,
+    baseResource?: string | SkeletonMetadata,
     saveMetadata = true,
-    extractAnimation = true,
-    baseResource?: string | SkeletonMetadata
+    extractAnimation = true
   ): Promise<SkeletonMetadata> {
     const engine = new NullEngine();
     const scene = new Scene(engine);
@@ -326,7 +326,10 @@ export class SkeletonAnalyzer {
           }
           if (surplus < 0) {
             const hshooterNext = shooterHash[++i];
-            assertIsDefined(hshooterNext);
+            if (!hshooterNext) {
+              isValied = false;
+              break;
+            }
             if (hshooterNext.value === hlonger.value) {
               continue;
             } else {
