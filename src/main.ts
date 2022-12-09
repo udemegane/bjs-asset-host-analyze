@@ -34,4 +34,12 @@ const asyncFn = async () => {
   );
   SkeletonAnalyzer.ShowMetadata(metaDude);
   SkeletonAnalyzer.SaveMetadata(metaDude);
+  console.log();
+  const metaNohead = await SkeletonAnalyzer.AnalyzeFromFileAsync(
+    "http://172.28.66.189:8080/",
+    "nohead.babylon",
+    meta
+  );
+  SkeletonAnalyzer.ShowMetadata(metaNohead);
+  SkeletonAnalyzer.SaveMetadata(metaNohead);
 };
