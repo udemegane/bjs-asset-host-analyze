@@ -22,10 +22,16 @@ const asyncFn = async () => {
   const meta3 = await SkeletonAnalyzer.AnalyzeFromFileAsync(
     "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/tools/playground/public/scenes/",
     "dummy3.babylon",
-    true,
-    true,
     meta
   );
   SkeletonAnalyzer.ShowMetadata(meta3);
   SkeletonAnalyzer.SaveMetadata(meta3);
+  console.log();
+  const metaDude = await SkeletonAnalyzer.AnalyzeFromFileAsync(
+    "https://raw.githubusercontent.com/BabylonJS/Assets/master/meshes/Dude/",
+    "dude.babylon",
+    meta
+  );
+  SkeletonAnalyzer.ShowMetadata(metaDude);
+  SkeletonAnalyzer.SaveMetadata(metaDude);
 };
