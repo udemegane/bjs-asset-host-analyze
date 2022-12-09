@@ -1,3 +1,2 @@
-import { Main } from "./main";
-
-const game = new Main();
+import { main } from "./main";
+main();
