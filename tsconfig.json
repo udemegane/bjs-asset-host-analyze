@@ -10,6 +10,7 @@
     "baseUrl": ".",
     "skipLibCheck": true,
     "strict": true,
+    "strictNullChecks": true,
     "skipDefaultLibCheck": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,

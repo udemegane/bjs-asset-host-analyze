@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "description": "Testing",
   "main": "src/index.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "startbyjs": "node --experimental-specifier-resolution=node --es-module-specifier-resolution=node dist/index.js",
-    "start": "node -r tsconfig-paths/register -r ts-node/register --experimental-loader=ts-node/esm --es-module-specifier-resolution=node src/index.ts"
+    "start": "node -r tsconfig-paths/register -r ts-node/register --experimental-loader=ts-node/esm --es-module-specifier-resolution=node src/index.ts",
+    "test": "jest"
   },
   "dependencies": {
     "@babylonjs/core": "5.37.0",
@@ -23,11 +25,12 @@
     "prettier": "^2.5.1",
     "ts-loader": "^8.1.0",
     "ts-node": "^10.9.1",
+    "ts-results": "^3.3.0",
+    "ts-results-es": "^3.5.0",
     "tsconfig-paths": "^4.1.1",
-    "typescript": "^3.9.6",
+    "typescript": "^4.9.4",
     "xhr2": "^0.2.1"
   },
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/panuchka/babylonjs-typescript-nullengine-example.git"
@@ -36,5 +39,11 @@
   "bugs": {
     "url": "https://github.com/panuchka/babylonjs-typescript-nullengine-example/issues"
   },
-  "homepage": "https://github.com/panuchka/babylonjs-typescript-nullengine-example#readme"
+  "homepage": "https://github.com/panuchka/babylonjs-typescript-nullengine-example#readme",
+  "devDependencies": {
+    "@types/jest": "^29.2.4",
+    "eslint-plugin-jest": "^27.1.6",
+    "jest": "^29.3.1",
+    "ts-jest": "^29.0.3"
+  }
 }
