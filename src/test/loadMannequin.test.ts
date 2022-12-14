@@ -36,12 +36,25 @@ test("Accept compatible skeletons (dummy2 and dummy3)", async () => {
   }
 });
 
-test("Accept compatible skeletons (dummy2 and nohead)", async () => {
+test("Accept compatible skeletons (dummy2 based nohead)", async () => {
   const meta = await SkeletonAnalyzer.AnalyzeFromFileAsync(
     "http://localhost:12380/",
     "dummy3.babylon",
     engine,
     noheadMetadata
+  );
+  expect(meta.ok).toBe(true);
+  if (meta.ok) {
+    expect(meta.val.isNewGroup).toBe(false);
+  }
+});
+
+test("Accept compatible skeletons (nohead based dummy2)", async () => {
+  const meta = await SkeletonAnalyzer.AnalyzeFromFileAsync(
+    "http://localhost:12380/",
+    "nohead.babylon",
+    engine,
+    dummy2Metadata
   );
   expect(meta.ok).toBe(true);
   if (meta.ok) {
