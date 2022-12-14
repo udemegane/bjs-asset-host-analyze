@@ -1,45 +1,28 @@
 import { NullEngine, Scene, SceneLoader, Skeleton } from "@babylonjs/core";
 import { SkeletonAnalyzer } from "./skeletonAnalyzer";
+import { server } from "./test/simpleServer";
 import "@babylonjs/loaders/glTF";
 // @ts-ignore
 import xhr2 from "xhr2";
 
 export const main = () => {
   global.XMLHttpRequest = xhr2;
+  server.listen(8080);
   asyncFn();
   // const engine = new NullEngine();
   // const scene = new Scene(engine);
 };
 
 const asyncFn = async () => {
-  const meta = await SkeletonAnalyzer.AnalyzeFromFileAsync(
-    "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/tools/playground/public/scenes/",
+  const dummy2 = await SkeletonAnalyzer.AnalyzeFromFileAsync(
+    "http://localhost:8080/",
     "dummy2.babylon"
   );
-  SkeletonAnalyzer.ShowMetadata(meta);
-  SkeletonAnalyzer.SaveMetadata(meta);
-  console.log();
-  const meta3 = await SkeletonAnalyzer.AnalyzeFromFileAsync(
-    "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/tools/playground/public/scenes/",
-    "dummy3.babylon",
-    meta
-  );
-  SkeletonAnalyzer.ShowMetadata(meta3);
-  SkeletonAnalyzer.SaveMetadata(meta3);
-  console.log();
-  const metaDude = await SkeletonAnalyzer.AnalyzeFromFileAsync(
-    "https://raw.githubusercontent.com/BabylonJS/Assets/master/meshes/Dude/",
-    "dude.babylon",
-    meta
-  );
-  SkeletonAnalyzer.ShowMetadata(metaDude);
-  SkeletonAnalyzer.SaveMetadata(metaDude);
-  console.log();
-  const metaNohead = await SkeletonAnalyzer.AnalyzeFromFileAsync(
-    "http://172.28.66.189:8080/",
-    "nohead.babylon",
-    meta
-  );
-  SkeletonAnalyzer.ShowMetadata(metaNohead);
-  SkeletonAnalyzer.SaveMetadata(metaNohead);
+  // const metaNohead = await SkeletonAnalyzer.AnalyzeFromFileAsync(
+  //   "http://172.28.66.189:8080/",
+  //   "nohead.babylon",
+  //   meta
+  // );
+  // SkeletonAnalyzer.ShowMetadata(metaNohead);
+  // SkeletonAnalyzer.SaveMetadata(metaNohead);
 };

@@ -6,28 +6,9 @@ import {
   NullEngine,
 } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
+import { Ok, Err, Result } from "ts-results-es";
+import { colors, assertIsDefined } from "./util";
 import * as fs from "fs";
-
-type AssertNonNullable = <T>(val: T) => asserts val is NonNullable<T>;
-export const assertIsDefined: AssertNonNullable = <T>(
-  val: T
-): asserts val is NonNullable<T> => {
-  if (val === undefined || val === null) {
-    throw new Error(`Expected 'val' to be defined, but received ${val}`);
-  }
-};
-
-const color = (col: string) => (str: string) => `\u001b[${col}m${str}\u001b[0m`;
-export const colors = {
-  black: color("30"),
-  red: color("31"),
-  green: color("32"),
-  yellow: color("33"),
-  blue: color("34"),
-  magenta: color("35"),
-  cyan: color("36"),
-  white: color("37"),
-};
 
 type BoneHash = {
   id: number; // このスケルトンのボーンのid
@@ -38,9 +19,10 @@ export type SkeletonHash = {
   bones: BoneHash[];
   groupId: number;
 };
-type SkeletonMetadata = {
+export type SkeletonMetadata = {
   bones: BoneHash[];
   groupId: string;
+  isNewGroup: boolean;
   name: string;
   fileName: string;
   type: "Animation" | "Model";
@@ -56,21 +38,37 @@ export class SkeletonAnalyzer {
   public static async AnalyzeFromFileAsync(
     root: string,
     fileName: string,
+    engine?: NullEngine,
     baseResource?: string | SkeletonMetadata,
     saveMetadata = true,
     extractAnimation = true
-  ): Promise<SkeletonMetadata> {
-    const engine = new NullEngine();
+  ): Promise<Result<SkeletonMetadata, string>> {
+    const isCreateingEngine = (() => {
+      if (engine) {
+        return true;
+      } else {
+        return false;
+      }
+    })();
+    if (!engine) {
+      engine = new NullEngine();
+    }
+
     const scene = new Scene(engine);
     const result = await SceneLoader.ImportMeshAsync("", root, fileName, scene);
     if (result.skeletons.length === 0) {
-      throw new Error("No skeleton in this file.");
+      return Err("No skeleton in this file.");
     }
     if (result.skeletons.length > 1) {
-      throw new Error("Too many skeletons in this file.");
+      return Err("Too many skeletons in this file.");
     }
     const skeleton = result.skeletons[0];
     assertIsDefined(skeleton);
+
+    // release resource
+    scene.dispose();
+    if (isCreateingEngine) engine.dispose();
+
     if (baseResource) {
       // まだ
       const resource = (() => {
@@ -85,20 +83,24 @@ export class SkeletonAnalyzer {
         }
       })();
 
-      return SkeletonAnalyzer.Analyze(
-        skeleton,
-        saveMetadata,
-        extractAnimation,
-        resource,
-        fileName
+      return Ok(
+        SkeletonAnalyzer.Analyze(
+          skeleton,
+          saveMetadata,
+          extractAnimation,
+          resource,
+          fileName
+        )
       );
     } else {
-      return SkeletonAnalyzer.Analyze(
-        skeleton,
-        saveMetadata,
-        extractAnimation,
-        undefined,
-        fileName
+      return Ok(
+        SkeletonAnalyzer.Analyze(
+          skeleton,
+          saveMetadata,
+          extractAnimation,
+          undefined,
+          fileName
+        )
       );
     }
   }
@@ -117,13 +119,7 @@ export class SkeletonAnalyzer {
         const v = c === "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
       });
-    const filename = (() => {
-      if (fileName) {
-        return fileName;
-      } else {
-        return "null";
-      }
-    })();
+    const filename = fileName ? fileName : "";
     console.info(colors.white(`Analyzing skeleton "${skeleton.name}"...`));
     const hash = SkeletonAnalyzer._MakeBoneHash(skeleton);
     if (baseSkeleton) {
@@ -138,6 +134,7 @@ export class SkeletonAnalyzer {
         return Object.freeze({
           bones: this._SetBaseId(hash, baseSkeleton.bones),
           groupId: baseSkeleton.groupId,
+          isNewGroup: false,
           name: skeleton.name,
           type: "Model",
           fileName: filename,
@@ -152,6 +149,7 @@ export class SkeletonAnalyzer {
     return Object.freeze({
       bones: hash,
       groupId: uuid(),
+      isNewGroup: true,
       name: skeleton.name,
       type: "Model",
       fileName: filename,

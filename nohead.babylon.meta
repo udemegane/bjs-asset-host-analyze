@@ -622,6 +622,7 @@
     }
   ],
   "groupId": "6f2595d5-47dd-474e-99e7-47d9e16c5aef",
+  "isNewGroup": true,
   "name": "mixamorig:Skin",
   "type": "Model",
   "fileName": "nohead.babylon"
