@@ -10,7 +10,7 @@ import * as path from "path";
 // 普通に使ってもesmなので__dirnameが使えないので動きませーーん
 export const server = http.createServer((req, res) => {
   console.log(`request : ${req.url}`);
-  const url = req.url ? req.url : "";
+  const url = req.url ? req.url : "index.html";
   const filePath = path.join(__dirname, "./public", url);
   const extname = String(path.extname(filePath)).toLowerCase();
   const mimeTypes: { [key: string]: string } = {
