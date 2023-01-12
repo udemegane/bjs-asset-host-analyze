@@ -15,10 +15,7 @@ type BoneHash = {
   baseId: number; // ベーススケルトンのボーンのid
   value: 0 | 1;
 };
-export type SkeletonHash = {
-  bones: BoneHash[];
-  groupId: number;
-};
+
 export type SkeletonMetadata = {
   bones: BoneHash[];
   groupId: string;
@@ -119,7 +116,7 @@ export class SkeletonAnalyzer {
         const v = c === "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
       });
-    const filename = fileName ? fileName : "";
+    const filename = fileName || "";
     console.info(colors.white(`Analyzing skeleton "${skeleton.name}"...`));
     const hash = SkeletonAnalyzer._MakeBoneHash(skeleton);
     if (baseSkeleton) {
