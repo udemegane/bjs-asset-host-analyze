@@ -1,23 +1,37 @@
-import { NullEngine, Scene, SceneLoader, Skeleton } from "@babylonjs/core";
-import { SkeletonAnalyzer } from "./skeletonAnalyzer";
-import { server } from "./test/simpleServer";
-import "@babylonjs/loaders/glTF";
-// @ts-ignore
-import xhr2 from "xhr2";
+import express from "express";
+import * as http from "http";
+import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const main = () => {
-  global.XMLHttpRequest = xhr2;
-  server.listen(8080);
-  asyncFn();
-  // const engine = new NullEngine();
-  // const scene = new Scene(engine);
+  const app = express();
+  app.set("port", 12380);
+  app.get("/", (req: express.Request, res: express.Response) => {
+    res.send("This is simple static server.");
+  });
+  app.use(express.static(path.join(__dirname, "../public")));
+
+  const server = http.createServer(app);
+  app.use((req, res, next) => {
+    const err = new Error("Not Found");
+    // @ts-ignore
+    err["status"] = 404;
+    next(err);
+  });
+
+  server.listen(app.get("port"), () => {
+    console.log("Express server listening on port " + app.get("port"));
+  });
 };
 
 const asyncFn = async () => {
-  const dummy2 = await SkeletonAnalyzer.AnalyzeFromFileAsync(
-    "http://localhost:8080/",
-    "dummy2.babylon"
-  );
+  // const dummy2 = await SkeletonAnalyzer.AnalyzeFromFileAsync(
+  //   "http://localhost:8080/",
+  //   "dummy2.babylon"
+  // );
   // const metaNohead = await SkeletonAnalyzer.AnalyzeFromFileAsync(
   //   "http://172.28.66.189:8080/",
   //   "nohead.babylon",
