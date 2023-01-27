@@ -23,10 +23,32 @@ test("Load and analyze .babylon file", async () => {
   expect(meta.ok).toBe(true);
 });
 
+test("Load and analyze .glb file", async () => {
+  const meta = await SkeletonAnalyzer.AnalyzeFromFileAsync(
+    "http://localhost:12380/",
+    "Xbot.glb",
+    engine
+  );
+  expect(meta.ok).toBe(true);
+});
+
 test("Accept compatible skeletons (dummy2 and dummy3)", async () => {
   const meta = await SkeletonAnalyzer.AnalyzeFromFileAsync(
     "http://localhost:12380/",
     "dummy3.babylon",
+    engine,
+    dummy2Metadata
+  );
+  expect(meta.ok).toBe(true);
+  if (meta.ok) {
+    expect(meta.val.isNewGroup).toBe(false);
+  }
+});
+
+test("Accept compatible skeletons (Xbot based dummy2)", async () => {
+  const meta = await SkeletonAnalyzer.AnalyzeFromFileAsync(
+    "http://localhost:12380/",
+    "Xbot.glb",
     engine,
     dummy2Metadata
   );
