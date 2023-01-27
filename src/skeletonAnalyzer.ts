@@ -340,9 +340,9 @@ export class SkeletonAnalyzer {
     return isValied;
   }
 
-  public static SaveMetadata(metadata: SkeletonMetadata) {
+  public static SaveMetadata(rootDir: string, metadata: SkeletonMetadata) {
     fs.writeFileSync(
-      `${metadata.fileName}.meta`,
+      `${rootDir}${metadata.fileName}.meta`,
       JSON.stringify(metadata, null, 2)
     );
   }
